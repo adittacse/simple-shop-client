@@ -6,7 +6,6 @@ import ProtectedClient from "../../../components/ProtectedClient";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default function AddProductPage() {
-    const [priority, setPriority] = useState("Medium");
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -28,7 +27,6 @@ export default function AddProductPage() {
             fullDescription,
             price,
             date,
-            priority,
             imageURL };
 
         await fetch(`${API_BASE_URL}/products`, {
@@ -42,7 +40,6 @@ export default function AddProductPage() {
             .then((data) => {
                 if (data.insertedId) {
                     setMessage("Product added successfully!");
-                    setPriority("Medium");
                     setLoading(false);
                 }
             });
@@ -90,30 +87,19 @@ export default function AddProductPage() {
                             <input name="price" type="text" min="0" className="input input-bordered w-full" placeholder="Price" required />
                         </div>
 
-                        {/* priority */}
+                        {/* product image url */}
                         <div className="form-control">
-                            <legend className="fieldset-legend mb-1">Priority</legend>
-                            <select
-                                className="select select-bordered w-full"
-                                value={priority}
-                                onChange={(e) => setPriority(e.target.value)}
-                            >
-                                <option>High</option>
-                                <option>Medium</option>
-                                <option>Low</option>
-                            </select>
+                            <legend className="fieldset-legend mb-1">Product Image URL</legend>
+                            <input name="imageURL" type="text" className="input input-bordered w-full" placeholder="https://..." required />
                         </div>
-                    </div>
-
-                    <div className="form-control">
-                        <legend className="fieldset-legend mb-1">Product Image URL</legend>
-                        <input name="imageURL" type="text" className="input input-bordered w-full" placeholder="https://..." required />
                     </div>
 
                     <button type="submit"
                         className={`btn btn-primary mt-4 ${loading ? "btn-disabled" : ""}`}
                     >
-                        {loading ? "Submitting..." : "Submit"}
+                        {
+                            loading ? "Submitting..." : "Submit"
+                        }
                     </button>
                 </form>
             </div>
