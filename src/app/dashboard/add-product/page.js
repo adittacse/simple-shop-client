@@ -3,61 +3,49 @@
 import { useState } from "react";
 import ProtectedClient from "../../../components/ProtectedClient";
 
-const API_BASE_URL =
-    typeof window === "undefined"
-        ? process.env.NEXT_PUBLIC_API_BASE_URL
-        : process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default function AddProductPage() {
-    const [title, setTitle] = useState("");
-    const [shortDescription, setShortDescription] = useState("");
-    const [fullDescription, setFullDescription] = useState("");
-    const [price, setPrice] = useState("");
-    const [date, setDate] = useState("");
     const [priority, setPriority] = useState("Medium");
-    const [imageUrl, setImageUrl] = useState("");
-    const [message, setMessage] = useState(null);
+    const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
     async function handleSubmit(e) {
         e.preventDefault();
-        setMessage(null);
+        setMessage("");
         setLoading(true);
 
-        try {
-            const res = await fetch(`${API_BASE_URL}/products`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    title,
-                    shortDescription,
-                    fullDescription,
-                    price,
-                    date,
-                    priority,
-                    imageUrl
-                })
+        const title = e.target.title.value;
+        const shortDescription = e.target.shortDescription.value;
+        const fullDescription = e.target.fullDescription.value;
+        const price = e.target.price.value;
+        const date = new Date();
+        const imageURL = e.target.imageURL.value;
+
+        const newProduct = {
+            title,
+            shortDescription,
+            fullDescription,
+            price,
+            date,
+            priority,
+            imageURL };
+
+        await fetch(`${API_BASE_URL}/products`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(newProduct)
+        })
+            .then(res => res.json())
+            .then((data) => {
+                if (data.insertedId) {
+                    setMessage("Product added successfully!");
+                    setPriority("Medium");
+                    setLoading(false);
+                }
             });
-
-            if (!res.ok) {
-                throw new Error("Failed");
-            }
-
-            setMessage("Product added successfully!");
-            setTitle("");
-            setShortDescription("");
-            setFullDescription("");
-            setPrice("");
-            setDate("");
-            setPriority("Medium");
-            setImageUrl("");
-        } catch (error) {
-            setMessage("Failed to add product.");
-        } finally {
-            setLoading(false);
-        }
     }
 
     return (
@@ -69,87 +57,44 @@ export default function AddProductPage() {
                     and submit to add a new product.
                 </p>
 
-                {message && (
-                    <div className="alert alert-info mb-4">
-                        <span>{message}</span>
-                    </div>
-                )}
+                {
+                    message && <div className="alert alert-info mb-4">
+                            <span>{message}</span>
+                        </div>
+                }
 
                 <form onSubmit={handleSubmit} className="grid gap-4">
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">Title</span>
-                        </label>
-                        <input
-                            className="input input-bordered"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            required
-                        />
+                    {/* title */}
+                    <div className="form-control w-full">
+                        <legend className="fieldset-legend mb-1">Product Title</legend>
+                        <input name="title" type="text" className="input w-full" placeholder="Apple MacBook pro" required />
                     </div>
 
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">Short Description</span>
-                        </label>
-                        <input
-                            className="input input-bordered"
-                            value={shortDescription}
-                            onChange={(e) => setShortDescription(e.target.value)}
-                            required
-                            maxLength={120}
-                        />
-                        <span className="text-xs opacity-60 mt-1">
-              1–2 short lines. Max 120 characters.
-            </span>
+                    {/* short description */}
+                    <div className="form-control w-full mb-5">
+                        <legend className="fieldset-legend mb-1">Short Description</legend>
+                        <textarea name="shortDescription" className="textarea w-full h-24" placeholder="Short description of the product" required ></textarea>
                     </div>
 
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">Full Description</span>
-                        </label>
-                        <textarea
-                            className="textarea textarea-bordered min-h-[120px]"
-                            value={fullDescription}
-                            onChange={(e) => setFullDescription(e.target.value)}
-                            required
-                        />
+                    {/* full description */}
+                    <div className="form-control w-full mb-5">
+                        <legend className="fieldset-legend mb-1">Full Description</legend>
+                        <textarea name="fullDescription" className="textarea w-full h-24" placeholder="Full description of the product" required ></textarea>
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-4">
+                    {/* price, date and priority */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* price */}
                         <div className="form-control">
-                            <label className="label">
-                                <span className="label-text">Price</span>
-                            </label>
-                            <input
-                                type="number"
-                                className="input input-bordered"
-                                value={price}
-                                onChange={(e) => setPrice(e.target.value)}
-                                required
-                                min="0"
-                                step="0.01"
-                            />
+                            <legend className="fieldset-legend mb-1">Price</legend>
+                            <input name="price" type="text" min="0" className="input input-bordered w-full" placeholder="Price" required />
                         </div>
 
+                        {/* priority */}
                         <div className="form-control">
-                            <label className="label">
-                                <span className="label-text">Date</span>
-                            </label>
-                            <input
-                                type="date"
-                                className="input input-bordered"
-                                value={date}
-                                onChange={(e) => setDate(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="form-control">
-                            <label className="label">
-                                <span className="label-text">Priority</span>
-                            </label>
+                            <legend className="fieldset-legend mb-1">Priority</legend>
                             <select
-                                className="select select-bordered"
+                                className="select select-bordered w-full"
                                 value={priority}
                                 onChange={(e) => setPriority(e.target.value)}
                             >
@@ -161,18 +106,11 @@ export default function AddProductPage() {
                     </div>
 
                     <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">Image URL (optional)</span>
-                        </label>
-                        <input
-                            className="input input-bordered"
-                            value={imageUrl}
-                            onChange={(e) => setImageUrl(e.target.value)}
-                        />
+                        <legend className="fieldset-legend mb-1">Product Image URL</legend>
+                        <input name="imageURL" type="text" className="input input-bordered w-full" placeholder="https://..." required />
                     </div>
 
-                    <button
-                        type="submit"
+                    <button type="submit"
                         className={`btn btn-primary mt-4 ${loading ? "btn-disabled" : ""}`}
                     >
                         {loading ? "Submitting..." : "Submit"}
