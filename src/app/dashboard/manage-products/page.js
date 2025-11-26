@@ -96,12 +96,12 @@ export default function ManageProductsPage() {
                                                 <td>
                                                     <div className="avatar">
                                                         <div className="mask mask-squircle h-20 w-20">
-                                                            <img src={p.imageURL} alt={p.title} />
+                                                            <img src={p?.imageURL} alt={p?.title} />
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td>{p.title}</td>
-                                                <td>{p.price}</td>
+                                                <td>{p?.title}</td>
+                                                <td>{p?.price}</td>
                                                 <th>
                                                     <Link href={`/items/${p._id}`} className="btn btn-xs btn-outline mr-2">
                                                         View
@@ -119,11 +119,13 @@ export default function ManageProductsPage() {
                                                 <td colSpan={5} className="text-center py-6">
                                                     No products found.
                                                 </td>
-                                            </tr>)
+                                            </tr>
+                                        )
                                     }
                                 </tbody>
                             </table>
-                        </div>)
+                        </div>
+                    )
                 }
             </div>
         </ProtectedClient>

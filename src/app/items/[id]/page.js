@@ -1,21 +1,15 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:5000";
 
 async function getProduct(id) {
-    const res = await fetch(`${API_BASE_URL}/products/${id}`, {
-        next: { revalidate: 0 }
-    });
-    if (!res.ok) {
-        return null;
-    }
-    return res.json();
+    return await fetch(`${API_BASE_URL}/products/${id}`).then(res => res.json());
 }
 
 export default async function ItemDetailsPage({ params }) {
-    const product = await getProduct(params.id);
+    const param = await params;
+    const product = await getProduct(param.id);
 
     if (!product) {
         notFound();
@@ -27,37 +21,31 @@ export default async function ItemDetailsPage({ params }) {
                 ← Back to Products
             </Link>
 
-            {product.imageUrl && (
-                <div className="w-full h-64 md:h-80 relative rounded-xl overflow-hidden">
-                    <Image
-                        src={product.imageUrl}
-                        alt={product.title}
-                        fill
-                        className="object-cover"
-                    />
-                </div>
-            )}
+            <div className="flex justify-center w-full h-64 md:h-80 relative rounded-xl">
+                <img
+                    src={product.imageURL}
+                    alt={product?.title}
+                    className="object-cover border-2"
+                />
+            </div>
 
             <div className="space-y-3">
                 <h1 className="text-3xl font-bold">{product.title}</h1>
-                <div className="flex flex-wrap gap-3 items-center text-sm">
-          <span className="badge badge-outline">
-            Price: ${Number(product.price).toFixed(2)}
-          </span>
-                    {product.date && (
-                        <span className="badge badge-outline">
-              Date: {product.date}
-            </span>
-                    )}
-                    {product.priority && (
-                        <span className="badge badge-outline">
-              Priority: {product.priority}
-            </span>
-                    )}
-                </div>
+
+                <p className="mt-4 leading-relaxed w-full text-center">
+                    <span className="font-bold text-xl">
+                        Price: ${product?.price}
+                    </span>
+                </p>
 
                 <p className="mt-4 leading-relaxed">
-                    {product.fullDescription || product.shortDescription}
+                    <span className="font-bold">Short Description: </span>
+                    {product?.shortDescription}
+                </p>
+
+                <p className="mt-4 leading-relaxed">
+                    <span className="font-bold">Full Description: </span>
+                    {product?.fullDescription}
                 </p>
             </div>
         </div>
