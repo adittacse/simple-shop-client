@@ -27,7 +27,8 @@ export default function AddProductPage() {
             fullDescription,
             price,
             date,
-            imageURL };
+            imageURL
+        };
 
         await fetch(`${API_BASE_URL}/products`, {
             method: "POST",
