@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ProtectedClient from "../../../components/ProtectedClient";
+import Swal from "sweetalert2";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -40,7 +41,13 @@ export default function AddProductPage() {
             .then(res => res.json())
             .then((data) => {
                 if (data.insertedId) {
-                    setMessage("Product added successfully!");
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Product added successfully!",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                     setLoading(false);
                 }
             });

@@ -24,7 +24,7 @@ export default function ManageProductsPage() {
         }
     }
 
-    async function handleDelete(id) {
+    async function handleDeleteProduct(id) {
         setMessage("");
 
         Swal.fire({
@@ -109,7 +109,7 @@ export default function ManageProductsPage() {
                                                     <Link href={`/dashboard/edit-product/${p._id}`} className="btn btn-xs btn-outline mr-2">
                                                         Edit
                                                     </Link>
-                                                    <button onClick={() => handleDelete(p._id)} className="btn btn-xs btn-outline font-medium text-red-500">
+                                                    <button onClick={() => handleDeleteProduct(p._id)} className="btn btn-xs btn-outline font-medium text-red-500">
                                                         Delete
                                                     </button>
                                                 </th>
