@@ -7,12 +7,10 @@ import Swal from "sweetalert2";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default function AddProductPage() {
-    const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
     async function handleSubmit(e) {
         e.preventDefault();
-        setMessage("");
         setLoading(true);
 
         const title = e.target.title.value;
@@ -100,13 +98,6 @@ export default function AddProductPage() {
                         }
                     </button>
                 </form>
-
-                {
-                    message && <div className="bg-primary text-white rounded-xl p-4 mt-4">
-                        <span>{message}</span>
-                    </div>
-                }
-
             </div>
         </ProtectedClient>
     );
