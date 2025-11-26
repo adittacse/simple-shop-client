@@ -1,12 +1,13 @@
-import { use } from "react";
 import ProductCard from "../../components/ProductCard";
 
 const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:5000";
 
-const productsPromise = fetch(`${API_BASE_URL}/products`).then(res => res.json());
+async function getProducts() {
+    return await fetch(`${API_BASE_URL}/products`).then(res => res.json());
+}
 
-export default function ItemsPage() {
-    const products = use(productsPromise);
+export default async function ItemsPage() {
+    const products = await getProducts();
 
     return (
         <div className="max-w-6xl mx-auto px-4 py-10 space-y-6">

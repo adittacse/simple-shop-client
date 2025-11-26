@@ -54,12 +54,6 @@ export default function AddProductPage() {
                     and submit to add a new product.
                 </p>
 
-                {
-                    message && <div className="alert alert-info mb-4">
-                            <span>{message}</span>
-                        </div>
-                }
-
                 <form onSubmit={handleSubmit} className="grid gap-4">
                     {/* title */}
                     <div className="form-control w-full">
@@ -102,6 +96,13 @@ export default function AddProductPage() {
                         }
                     </button>
                 </form>
+
+                {
+                    message && <div className="bg-primary text-white rounded-xl p-4 mt-4">
+                        <span>{message}</span>
+                    </div>
+                }
+
             </div>
         </ProtectedClient>
     );
