@@ -20,7 +20,6 @@ export const authOptions = {
             async authorize(credentials) {
                 if (!credentials) return null;
 
-                // Demo user for assignment
                 if (
                     credentials.email === "demo@demo.com" &&
                     credentials.password === "demo123"
@@ -32,7 +31,6 @@ export const authOptions = {
                     };
                 }
 
-                // Return null if user not allowed
                 return null;
             }
         })
