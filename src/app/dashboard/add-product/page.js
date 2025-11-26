@@ -50,10 +50,6 @@ export default function AddProductPage() {
         <ProtectedClient>
             <div className="max-w-3xl mx-auto px-4 py-10">
                 <h1 className="text-3xl font-bold mb-4">Add Product</h1>
-                <p className="opacity-80 mb-6">
-                    Only logged-in users can access this page. Fill in the fields below
-                    and submit to add a new product.
-                </p>
 
                 <form onSubmit={handleSubmit} className="grid gap-4">
                     {/* title */}

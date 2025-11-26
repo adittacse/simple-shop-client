@@ -1,0 +1,127 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import ProtectedClient from "../../../../components/ProtectedClient";
+import { useParams } from "next/navigation";
+import Swal from "sweetalert2";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+export default function EditProductPage() {
+    const { id } = useParams();
+    const [product, setProduct] = useState({});
+
+    const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        fetch(`${API_BASE_URL}/products/${id}`)
+            .then((res) => res.json())
+            .then((data) => {
+                setProduct(data);
+            })
+    }, [id]);
+
+    async function handleEditProduct(e) {
+        e.preventDefault();
+        setLoading(true);
+        setError("");
+
+        const title = e.target.title.value;
+        const shortDescription = e.target.shortDescription.value;
+        const fullDescription = e.target.fullDescription.value;
+        const price = e.target.price.value;
+        const date = new Date();
+        const imageURL = e.target.imageURL.value;
+
+        const updatedProduct = {
+            title,
+            shortDescription,
+            fullDescription,
+            price,
+            date,
+            imageURL
+        };
+
+        await fetch(`${API_BASE_URL}/products/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(updatedProduct)
+        })
+            .then(res => res.json())
+            .then((data) => {
+                if (data.modifiedCount) {
+                    Swal.fire({
+                        title: "Updated!",
+                        text: "Product has been updated successfully.",
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    setLoading(false);
+                }
+            });
+    }
+
+    return (
+        <ProtectedClient>
+            <div className="max-w-3xl mx-auto px-4 py-10">
+                <h1 className="text-3xl font-bold mb-4">Edit Product</h1>
+
+                {
+                    loading ? (
+                        <div className="flex justify-center items-center min-h-[40vh]">
+                            <span className="loading loading-spinner loading-lg" />
+                        </div>
+                    ) : (
+                        <form onSubmit={handleEditProduct} className="grid gap-4">
+                            {/* title */}
+                            <div className="form-control w-full">
+                                <legend className="fieldset-legend mb-1">Product Title</legend>
+                                <input defaultValue={product?.title} name="title" type="text" className="input w-full" placeholder="Apple MacBook pro" required />
+                            </div>
+
+                            {/* short description */}
+                            <div className="form-control w-full mb-5">
+                                <legend className="fieldset-legend mb-1">Short Description</legend>
+                                <textarea defaultValue={product?.shortDescription} name="shortDescription" className="textarea w-full h-24" placeholder="Short description of the product" required ></textarea>
+                            </div>
+
+                            {/* full description */}
+                            <div className="form-control w-full mb-5">
+                                <legend className="fieldset-legend mb-1">Full Description</legend>
+                                <textarea defaultValue={product?.fullDescription} name="fullDescription" className="textarea w-full h-24" placeholder="Full description of the product" required ></textarea>
+                            </div>
+
+                            {/* price, date and priority */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {/* price */}
+                                <div className="form-control">
+                                    <legend className="fieldset-legend mb-1">Price</legend>
+                                    <input defaultValue={product?.price} name="price" type="text" min="0" className="input input-bordered w-full" placeholder="Price" required />
+                                </div>
+
+                                {/* product image url */}
+                                <div className="form-control">
+                                    <legend className="fieldset-legend mb-1">Product Image URL</legend>
+                                    <input defaultValue={product?.imageURL} name="imageURL" type="text" className="input input-bordered w-full" placeholder="https://..." required />
+                                </div>
+                            </div>
+
+                            <button type="submit"
+                                    className={`btn btn-primary mt-4 ${loading ? "btn-disabled" : ""}`}
+                            >
+                                {
+                                    loading ? "Updating..." : "Update"
+                                }
+                            </button>
+                        </form>
+                    )
+                }
+            </div>
+        </ProtectedClient>
+    );
+}

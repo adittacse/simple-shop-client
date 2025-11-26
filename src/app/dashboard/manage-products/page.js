@@ -106,6 +106,9 @@ export default function ManageProductsPage() {
                                                     <Link href={`/items/${p._id}`} className="btn btn-xs btn-outline mr-2">
                                                         View
                                                     </Link>
+                                                    <Link href={`/dashboard/edit-product/${p._id}`} className="btn btn-xs btn-outline mr-2">
+                                                        Edit
+                                                    </Link>
                                                     <button onClick={() => handleDelete(p._id)} className="btn btn-xs btn-outline font-medium text-red-500">
                                                         Delete
                                                     </button>
