@@ -12,7 +12,7 @@ It focuses on **polished UI**, **responsive layout**, and **basic authentication
 
 ## Live Demo
 
-- Frontend: https://simple-shop-189e1.web.app
+- Frontend: https://simple-shop-client.vercel.app
 - Backend: https://simple-shop-server.onrender.com
 
 ## Features / Routes Summary
