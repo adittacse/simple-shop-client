@@ -5,21 +5,26 @@ import { useEffect, useState } from "react";
 
 const API_BASE_URL = process.env.API_BASE_URL || "https://simple-shop-server.onrender.com";
 
-async function getProducts() {
-    return await fetch(`${API_BASE_URL}/products`).then(res => res.json());
-}
-
 export default function ItemsPage() {
     const [products, setProducts] = useState([]);
-    // const products = await getProducts();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetch(`${API_BASE_URL}/products`)
             .then(res => res.json())
             .then(data => {
                 setProducts(data);
+                setLoading(false);
             });
     }, []);
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-[60vh]">
+                <span className="loading loading-spinner loading-lg" />
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-6xl mx-auto px-4 py-10 space-y-6">

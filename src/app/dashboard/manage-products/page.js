@@ -13,15 +13,12 @@ export default function ManageProductsPage() {
     const [message, setMessage] = useState("");
 
     async function fetchProducts() {
-        try {
-            const res = await fetch(`${API_BASE_URL}/products`);
-            const data = await res.json();
-            setProducts(data);
-        } catch (error) {
-            setMessage("Failed to load products.");
-        } finally {
-            setLoading(false);
-        }
+        await fetch(`${API_BASE_URL}/products`)
+            .then(res => res.json())
+            .then(data => {
+                setProducts(data);
+                setLoading(false);
+            });
     }
 
     async function handleDeleteProduct(id) {
