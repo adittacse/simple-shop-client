@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
-import { useState } from "react";
+// import { useSession, signOut } from "next-auth/react";
+import {useContext, useState} from "react";
+import AuthContext from "@/app/contexts/AuthContext";
+import Swal from "sweetalert2";
 
 const navLinks = [
     { href: "/", label: "Home" },
@@ -13,12 +15,27 @@ const navLinks = [
 ];
 
 export default function Navbar() {
-    const { data: session } = useSession();
+    // const { data: session } = useSession();
     const pathname = usePathname();
     const router = useRouter();
     const [open, setOpen] = useState(false);
+    const { user, userSignOut } = useContext(AuthContext);
 
     const isActive = (href) => pathname === href;
+
+    const handleLogout = () => {
+        userSignOut()
+            .then(() => {
+                // toast.success("Signed out");
+            })
+            .catch((error) => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: `${error.message}`,
+                });
+            })
+    }
 
     return (
         <header className="sticky top-0 z-50 border-b bg-white/90 backdrop-blur">
@@ -51,7 +68,7 @@ export default function Navbar() {
 
                 {/* RIGHT: Auth buttons */}
                 <div className="flex items-center gap-2">
-                    {!session && (
+                    {!user && (
                         <>
                             <button
                                 className="btn btn-ghost btn-xs sm:btn-sm"
@@ -68,19 +85,19 @@ export default function Navbar() {
                         </>
                     )}
 
-                    {session && (
+                    {user && (
                         <div className="flex items-center gap-2">
                             <div className="hidden sm:flex flex-col text-right text-xs">
                 <span className="font-semibold leading-tight">
-                  {session.user?.name || "User"}
+                  {user?.displayName || "User"}
                 </span>
                                 <span className="opacity-70">
-                  {session.user?.email || ""}
+                  {user?.email || ""}
                 </span>
                             </div>
                             <button
                                 className="btn btn-outline btn-xs sm:btn-sm"
-                                onClick={() => signOut({ callbackUrl: "/" })}
+                                onClick={handleLogout}
                             >
                                 Logout
                             </button>
@@ -127,7 +144,7 @@ export default function Navbar() {
                             </Link>
                         ))}
 
-                        {!session && (
+                        {!user && (
                             <div className="flex gap-2 mt-2">
                                 <button
                                     className="btn btn-ghost btn-xs flex-1"
@@ -150,13 +167,10 @@ export default function Navbar() {
                             </div>
                         )}
 
-                        {session && (
+                        {user && (
                             <button
                                 className="btn btn-outline btn-xs mt-2"
-                                onClick={() => {
-                                    setOpen(false);
-                                    signOut({ callbackUrl: "/" });
-                                }}
+                                onClick={handleLogout}
                             >
                                 Logout
                             </button>

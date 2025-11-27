@@ -50,7 +50,6 @@ export default function RegisterPage() {
                     displayName: displayName
                 })
                     .then(() => {
-                        setUser({ ...result.user, displayName });
                         Swal.fire({
                             position: "top-end",
                             icon: "success",
