@@ -46,6 +46,7 @@ export default function AddProductPage() {
                         showConfirmButton: false,
                         timer: 1500
                     });
+                    e.target.reset();
                     setLoading(false);
                 }
             });
@@ -94,7 +95,7 @@ export default function AddProductPage() {
                         className={`btn btn-primary mt-4 ${loading ? "btn-disabled" : ""}`}
                     >
                         {
-                            loading ? "Submitting..." : "Submit"
+                            loading ? "Adding..." : "Add Product"
                         }
                     </button>
                 </form>

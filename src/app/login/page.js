@@ -56,14 +56,11 @@ export default function LoginPage() {
         <div className="hero min-h-screen">
             <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
                 <div className="card-body">
-                    <div className="text-center text-secondary">
+                    <div className="text-center">
                         <h1 className="text-[32px] font-semibold">Login here!</h1>
                         <p className="mt-2 mb-4">
-                            Don&apos;t have an account?{" "}
-                            <Link
-                                href={registerLink}
-                                className="text-primary font-semibold"
-                            >
+                            Don&#39;t have an account?{" "}
+                            <Link href={registerLink} className="font-semibold">
                                 Register Now
                             </Link>
                         </p>
@@ -72,7 +69,7 @@ export default function LoginPage() {
                     <form onSubmit={handleLogin}>
                         <fieldset className="fieldset">
                             {/* email */}
-                            <label className="label text-secondary">Email</label>
+                            <label className="label">Email</label>
                             <input
                                 name="email"
                                 type="email"
@@ -81,7 +78,7 @@ export default function LoginPage() {
                                 required
                             />
                             {/* password */}
-                            <label className="label text-secondary">Password</label>
+                            <label className="label">Password</label>
                             <input
                                 name="password"
                                 type="password"
@@ -92,7 +89,7 @@ export default function LoginPage() {
                             <div>
                                 <button
                                     type="button"
-                                    className="link link-hover text-secondary text-xs"
+                                    className="link link-hover text-xs"
                                 >
                                     Forgot password?
                                 </button>

@@ -2,20 +2,18 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-// import { useSession, signOut } from "next-auth/react";
-import {useContext, useState} from "react";
+import { useContext, useState } from "react";
 import AuthContext from "@/app/contexts/AuthContext";
 import Swal from "sweetalert2";
 
-const navLinks = [
+const allLinks = [
     { href: "/", label: "Home" },
     { href: "/items", label: "Products" },
-    { href: "/dashboard/add-product", label: "Add Product" },
-    { href: "/dashboard/manage-products", label: "Manage Products" },
+    { href: "/dashboard/add-product", label: "Add Product", private: true },
+    { href: "/dashboard/manage-products", label: "Manage Products", private: true }
 ];
 
 export default function Navbar() {
-    // const { data: session } = useSession();
     const pathname = usePathname();
     const router = useRouter();
     const [open, setOpen] = useState(false);
@@ -23,19 +21,25 @@ export default function Navbar() {
 
     const isActive = (href) => pathname === href;
 
+    // এখানে user অনুযায়ী কোন লিঙ্ক দেখাবে সেটা ঠিক করলাম
+    const navLinksToShow = allLinks.filter((link) => {
+        if (link.private && !user) return false;
+        return true;
+    });
+
     const handleLogout = () => {
         userSignOut()
             .then(() => {
-                // toast.success("Signed out");
+                // চাইলে এখানে toast দেখাতে পারো
             })
             .catch((error) => {
                 Swal.fire({
                     icon: "error",
                     title: "Oops...",
-                    text: `${error.message}`,
+                    text: `${error.message}`
                 });
-            })
-    }
+            });
+    };
 
     return (
         <header className="sticky top-0 z-50 border-b bg-white/90 backdrop-blur">
@@ -52,7 +56,7 @@ export default function Navbar() {
 
                 {/* CENTER: Menu (desktop) */}
                 <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-                    {navLinks.map((link) => (
+                    {navLinksToShow.map((link) => (
                         <Link
                             key={link.href}
                             href={link.href}
@@ -91,9 +95,7 @@ export default function Navbar() {
                 <span className="font-semibold leading-tight">
                   {user?.displayName || "User"}
                 </span>
-                                <span className="opacity-70">
-                  {user?.email || ""}
-                </span>
+                                <span className="opacity-70">{user?.email || ""}</span>
                             </div>
                             <button
                                 className="btn btn-outline btn-xs sm:btn-sm"
@@ -130,7 +132,7 @@ export default function Navbar() {
             {open && (
                 <nav className="md:hidden border-t bg-white">
                     <div className="max-w-6xl mx-auto px-4 py-2 flex flex-col gap-1 text-sm font-medium">
-                        {navLinks.map((link) => (
+                        {navLinksToShow.map((link) => (
                             <Link
                                 key={link.href}
                                 href={link.href}
@@ -170,7 +172,10 @@ export default function Navbar() {
                         {user && (
                             <button
                                 className="btn btn-outline btn-xs mt-2"
-                                onClick={handleLogout}
+                                onClick={() => {
+                                    setOpen(false);
+                                    handleLogout();
+                                }}
                             >
                                 Logout
                             </button>
