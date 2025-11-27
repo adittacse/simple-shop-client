@@ -1,95 +1,126 @@
 "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useContext, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import AuthContext from "@/app/contexts/AuthContext";
 
 export default function LoginPage() {
+    const [success, setSuccess] = useState("");
+    const [error, setError] = useState("");
+
+    const { setUser, userSignInUser, googleSignIn } = useContext(AuthContext);
     const router = useRouter();
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get("callbackUrl") || "/";
-    const [email, setEmail] = useState("demo@demo.com");
-    const [password, setPassword] = useState("demo123");
-    const [error, setError] = useState("");
 
-    async function handleSubmit(e) {
+    const handleLogin = (e) => {
         e.preventDefault();
+        const email = e.target.email.value;
+        const password = e.target.password.value;
+
+        setSuccess("");
         setError("");
 
-        const res = await signIn("credentials", {
-            redirect: false,
-            email,
-            password,
-            callbackUrl
-        });
+        userSignInUser(email, password)
+            .then((result) => {
+                setUser(result.user);
+                setSuccess("Logged in successfully!");
+                router.push(callbackUrl);
+            })
+            .catch((err) => {
+                setError(err.message);
+            });
+    };
 
-        if (res?.error) {
-            setError("Invalid credentials");
-            return;
-        }
+    const handleGoogleLogin = () => {
+        setSuccess("");
+        setError("");
 
-        router.push(callbackUrl);
-    }
+        googleSignIn()
+            .then((result) => {
+                setUser(result.user);
+                setSuccess("Logged in successfully!");
+                router.push(callbackUrl);
+            })
+            .catch((err) => {
+                setError(err.message);
+            });
+    };
+
+    const registerLink = `/register?callbackUrl=${encodeURIComponent(
+        callbackUrl
+    )}`;
 
     return (
-        <div className="flex justify-center items-center min-h-[70vh] px-4">
-            <div className="card w-full max-w-md bg-base-100 shadow">
+        <div className="hero min-h-screen">
+            <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
                 <div className="card-body">
-                    <h2 className="card-title text-2xl mb-2">Login</h2>
-                    <p className="text-sm opacity-80 mb-4">
-                        Use Google or demo credentials to sign in.
-                    </p>
+                    <div className="text-center text-secondary">
+                        <h1 className="text-[32px] font-semibold">Login here!</h1>
+                        <p className="mt-2 mb-4">
+                            Don&apos;t have an account?{" "}
+                            <Link
+                                href={registerLink}
+                                className="text-primary font-semibold"
+                            >
+                                Register Now
+                            </Link>
+                        </p>
+                    </div>
 
-                    {error && (
-                        <div className="alert alert-error py-2 text-sm mb-3">
-                            {error}
-                        </div>
-                    )}
-
-                    <button
-                        className="btn btn-outline w-full mb-3"
-                        onClick={() => signIn("google", { callbackUrl })}
-                    >
-                        Continue with Google
-                    </button>
-
-                    <div className="divider text-xs">OR LOGIN WITH EMAIL</div>
-
-                    <form onSubmit={handleSubmit} className="space-y-3">
-                        <div className="form-control">
-                            <label className="label">
-                                <span className="label-text">Email</span>
-                            </label>
+                    <form onSubmit={handleLogin}>
+                        <fieldset className="fieldset">
+                            {/* email */}
+                            <label className="label text-secondary">Email</label>
                             <input
+                                name="email"
                                 type="email"
                                 className="input input-bordered"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="demo@demo.com"
+                                placeholder="Your Email"
+                                required
                             />
-                        </div>
-
-                        <div className="form-control">
-                            <label className="label">
-                                <span className="label-text">Password</span>
-                            </label>
+                            {/* password */}
+                            <label className="label text-secondary">Password</label>
                             <input
+                                name="password"
                                 type="password"
                                 className="input input-bordered"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="demo123"
+                                placeholder="******"
+                                required
                             />
-                        </div>
-
-                        <button type="submit" className="btn btn-primary w-full mt-2">
-                            Login
-                        </button>
+                            <div>
+                                <button
+                                    type="button"
+                                    className="link link-hover text-secondary text-xs"
+                                >
+                                    Forgot password?
+                                </button>
+                            </div>
+                            <button className="btn btn-primary font-semibold mt-4">
+                                Sign In
+                            </button>
+                        </fieldset>
                     </form>
 
-                    <p className="text-xs opacity-70 mt-4">
-                        Demo: email <b>demo@demo.com</b> & password <b>demo123</b>.
-                    </p>
+                    {success && (
+                        <p className="text-center text-green-500 font-semibold mt-2">
+                            {success}
+                        </p>
+                    )}
+                    {error && (
+                        <p className="text-center text-red-500 font-semibold mt-2">
+                            {error}
+                        </p>
+                    )}
+
+                    <div className="divider font-semibold text-secondary">OR</div>
+
+                    {/* Google */}
+                    <button onClick={handleGoogleLogin} className="btn bg-white text-black border-[#e5e5e5]">
+                        <svg aria-label="Google logo" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><g><path d="m0 0H512V512H0" fill="#fff"></path><path fill="#34a853" d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"></path><path fill="#4285f4" d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"></path><path fill="#fbbc02" d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"></path><path fill="#ea4335" d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"></path></g></svg>
+                        Login with Google
+                    </button>
                 </div>
             </div>
         </div>

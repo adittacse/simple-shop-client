@@ -1,21 +1,22 @@
 "use client";
 
-import { useEffect } from "react";
-import { useSession } from "next-auth/react";
+import {useContext, useEffect} from "react";
 import { useRouter } from "next/navigation";
+import AuthContext from "@/app/contexts/AuthContext";
 
 export default function ProtectedClient({ children }) {
-    const { status } = useSession();
+    const { user, loading } = useContext(AuthContext);
     const router = useRouter();
 
     useEffect(() => {
-        if (status === "unauthenticated") {
-            const callbackUrl = window.location.pathname;
-            router.push(`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+        if (!loading && !user) {
+            const path =
+                typeof window !== "undefined" ? window.location.pathname : "/";
+            router.push(`/login?callbackUrl=${encodeURIComponent(path)}`);
         }
-    }, [status, router]);
+    }, [loading, user, router]);
 
-    if (status === "loading") {
+    if (loading) {
         return (
             <div className="flex justify-center items-center min-h-[50vh]">
                 <span className="loading loading-spinner loading-lg" />
@@ -23,9 +24,9 @@ export default function ProtectedClient({ children }) {
         );
     }
 
-    if (status === "authenticated") {
-        return <>{children}</>;
+    if (!user) {
+        return null;
     }
 
-    return null;
+    return children;
 }
