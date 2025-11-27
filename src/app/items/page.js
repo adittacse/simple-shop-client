@@ -1,4 +1,7 @@
+"use client";
+
 import ProductCard from "../../components/ProductCard";
+import { useEffect, useState } from "react";
 
 const API_BASE_URL = process.env.API_BASE_URL || "https://simple-shop-server.onrender.com";
 
@@ -6,8 +9,17 @@ async function getProducts() {
     return await fetch(`${API_BASE_URL}/products`).then(res => res.json());
 }
 
-export default async function ItemsPage() {
-    const products = await getProducts();
+export default function ItemsPage() {
+    const [products, setProducts] = useState([]);
+    // const products = await getProducts();
+
+    useEffect(() => {
+        fetch(`${API_BASE_URL}/products`)
+            .then(res => res.json())
+            .then(data => {
+                setProducts(data);
+            });
+    }, []);
 
     return (
         <div className="max-w-6xl mx-auto px-4 py-10 space-y-6">
