@@ -9,7 +9,7 @@ async function getProducts() {
 
 const Highlight = async () => {
     const productsData = await getProducts();
-    const data = productsData.slice(3);
+    const data = productsData.slice(0, 3);
 
     return (
         <section id="highlight" className="max-w-6xl mx-auto px-4 space-y-6">
