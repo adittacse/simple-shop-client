@@ -1,19 +1,19 @@
-# SimpleShop – Next.js + NextAuth + Express Demo
+# SimpleShop – Next.js + MongoDB + Express + Node.js
 
-SimpleShop is a **minimal product management demo** built for a Next.js App Router assignment.  
+SimpleShop is a **minimal product management** built for a Next.js App Router.  
 It focuses on **polished UI**, **responsive layout**, and **basic authentication** with protected routes.
 
 ## Tech Stack
 
 - **Next.js (App Router)**
-- **NextAuth.js** (Google + Credentials)
+- **Firebase** (Google + Email Credentials)
 - **Tailwind CSS** + **DaisyUI**
-- **Express.js** backend (in-memory products API)
+- **Express.js** backend
 
 ## Live Demo
 
-- Frontend: https://your-vercel-url.vercel.app
-- Backend: https://your-backend-url (optional)
+- Frontend: https://simple-shop-189e1.web.app
+- Backend: https://simple-shop-server.onrender.com
 
 ## Features / Routes Summary
 
@@ -24,46 +24,35 @@ It focuses on **polished UI**, **responsive layout**, and **basic authentication
 
 - `/login` – Login page
     - Google social login
-    - Credentials (demo user: `demo@demo.com` / `demo123`)
     - Redirects to `/` or `callbackUrl` after login
 
 - `/register` – Simple UI-only register form
 
 - `/items` – Item list page
     - Title + description
-    - Search bar & priority filter (UI only)
-    - Grid of 6+ product cards
+    - Grid of product cards
 
 - `/items/[id]` – Item details page
     - Large image/banner
-    - Title, price, date, priority
+    - Title, Price
+    - Short Description
     - Full description
-    - Back button
 
 - `/dashboard/add-product` – **Protected**
     - Only for logged-in users (redirects others to `/login`)
-    - Form: title, short description, full description, price, date, priority, image URL
+    - Form: title, short description, full description, price, image URL
     - On success: shows confirmation alert
 
 - `/dashboard/manage-products` – **Protected**
     - Table of all products
-    - Actions: View (details page), Delete
+    - Actions: View, Edit, Delete
 
 ## Backend API (Express)
 
-Base URL: `http://localhost:5000`
+Base URL: `https://simple-shop-server.onrender.com`
 
 - `GET /products` – list all products
 - `GET /products/:id` – get single product
 - `POST /products` – add product
 - `DELETE /products/:id` – delete product
 
-> Products are stored in memory for simplicity (no database).
-
-## Setup & Installation
-
-### 1. Clone repo
-
-```bash
-git clone https://github.com/your-username/simpleshop.git
-cd simpleshop

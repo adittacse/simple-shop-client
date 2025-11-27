@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL = process.env.API_BASE_URL || "https://simple-shop-server.onrender.com";
 
 async function getProduct(id) {
     return await fetch(`${API_BASE_URL}/products/${id}`).then(res => res.json());

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL = process.env.API_BASE_URL || "https://simple-shop-server.onrender.com";
 
 async function getProducts() {
     return await fetch(`${API_BASE_URL}/products`).then(res => res.json());
