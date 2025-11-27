@@ -1,14 +1,31 @@
 "use client";
 
-import { useContext, useState } from "react";
+import { Suspense, useContext, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Swal from "sweetalert2";
 import AuthContext from "@/app/contexts/AuthContext";
 import Link from "next/link";
 
+// বাইরের wrapper: Suspense boundary
 export default function RegisterPage() {
+    return (
+        <Suspense
+            fallback={
+                <div className="hero min-h-screen">
+                    <span className="loading loading-spinner loading-lg" />
+                </div>
+            }
+        >
+            <RegisterPageInner />
+        </Suspense>
+    );
+}
+
+// ভিতরের আসল ফর্ম কম্পোনেন্ট
+function RegisterPageInner() {
     const [error, setError] = useState("");
-    const { createUser, updateUser, setUser, googleSignIn } = useContext(AuthContext);
+    const { createUser, updateUser, setUser, googleSignIn } =
+        useContext(AuthContext);
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -19,7 +36,7 @@ export default function RegisterPage() {
         const form = e.target;
         const displayName = form.name.value;
         const email = form.email.value;
-        const photo = form.photo.value;
+        const photo = form.photo?.value; // থাকলে নেবে
         const password = form.password.value;
         const confirmPassword = form.confirmPassword.value;
 
@@ -48,9 +65,11 @@ export default function RegisterPage() {
         createUser(email, password)
             .then((result) => {
                 updateUser({
-                    displayName: displayName
+                    displayName,
+                    photoURL: photo || undefined
                 })
                     .then(() => {
+                        setUser({ ...result.user, displayName, photoURL: photo });
                         Swal.fire({
                             position: "top-end",
                             icon: "success",
@@ -159,19 +178,46 @@ export default function RegisterPage() {
                         </fieldset>
                     </form>
 
-                    {
-                        error && (
-                            <p className="text-center text-red-500 font-semibold mt-2">
-                                {error}
-                            </p>
-                        )
-                    }
+                    {error && (
+                        <p className="text-center text-red-500 font-semibold mt-2">
+                            {error}
+                        </p>
+                    )}
 
                     <div className="divider font-semibold text-secondary">OR</div>
 
                     {/* Google */}
-                    <button onClick={handleGoogleLogin} className="btn bg-white text-black border-[#e5e5e5]">
-                        <svg aria-label="Google logo" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><g><path d="m0 0H512V512H0" fill="#fff"></path><path fill="#34a853" d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"></path><path fill="#4285f4" d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"></path><path fill="#fbbc02" d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"></path><path fill="#ea4335" d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"></path></g></svg>
+                    <button
+                        onClick={handleGoogleLogin}
+                        className="btn bg-white text-black border-[#e5e5e5]"
+                    >
+                        <svg
+                            aria-label="Google logo"
+                            width="16"
+                            height="16"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 512 512"
+                        >
+                            <g>
+                                <path d="m0 0H512V512H0" fill="#fff"></path>
+                                <path
+                                    fill="#34a853"
+                                    d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"
+                                ></path>
+                                <path
+                                    fill="#4285f4"
+                                    d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"
+                                ></path>
+                                <path
+                                    fill="#fbbc02"
+                                    d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"
+                                ></path>
+                                <path
+                                    fill="#ea4335"
+                                    d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"
+                                ></path>
+                            </g>
+                        </svg>
                         Register with Google
                     </button>
                 </div>
