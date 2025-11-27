@@ -12,14 +12,14 @@ export default function ManageProductsPage() {
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState("");
 
-    async function fetchProducts() {
-        await fetch(`${API_BASE_URL}/products`)
+    useEffect(() => {
+        fetch(`${API_BASE_URL}/products`)
             .then(res => res.json())
             .then(data => {
                 setProducts(data);
                 setLoading(false);
             });
-    }
+    }, []);
 
     async function handleDeleteProduct(id) {
         setMessage("");
@@ -52,10 +52,6 @@ export default function ManageProductsPage() {
             }
         });
     }
-
-    useEffect(() => {
-        fetchProducts();
-    }, []);
 
     return (
         <ProtectedClient>
